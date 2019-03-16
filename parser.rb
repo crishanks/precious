@@ -39,6 +39,9 @@ class Parser
       parse_division(line)
     elsif line.include?(MULTIPLICATION_KEYWORD)
       parse_multiplication(line)
+
+    #else
+    # error handling?
     end
 
   end
