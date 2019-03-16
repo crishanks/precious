@@ -12,6 +12,7 @@ class Parser
   DECREMENT_KEYWORD = 'runs out of lembas bread'
   ADDITION_KEYWORD = 'join the fellowship'
   SUBTRACTION_KEYWORD = 'leave the fellowship'
+  DIVISION_KEYWORD = 'decapitates'
 
   def self.parse_line(line)
     line = line.downcase
@@ -29,6 +30,8 @@ class Parser
       parse_addition(line)
     elsif line.include?(SUBTRACTION_KEYWORD)
       parse_subtraction(line)
+    elsif line.include?(DIVISION_KEYWORD)
+      parse_division(line)
     end
 
   end
@@ -84,6 +87,11 @@ class Parser
     line = line.gsub('and', '-')
     line_array = line.split('leave the fellowship')
     write(line_array[0])
+  end
+
+  def self.parse_division(line)
+    line = line.gsub('decapitates', '/')
+    write(line)
   end
 
   def self.write(str)
