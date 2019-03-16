@@ -8,3 +8,4 @@ puts frodo
 frodo + saruman 
 sam = 3
 frodo - sam 
+sam -= 1

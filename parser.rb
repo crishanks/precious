@@ -9,6 +9,7 @@ class Parser
   ASSIGNMENT_KEYWORD = '.'
   COMPARISON_KEYWORD = '?'
   INCREMENT_KEYWORD = 'eats lembas bread'
+  DECREMENT_KEYWORD = 'runs out of lembas bread'
   ADDITION_KEYWORD = 'join the fellowship'
   SUBTRACTION_KEYWORD = 'leave the fellowship'
 
@@ -22,6 +23,8 @@ class Parser
       parse_assignment(line)
     elsif line.include?(INCREMENT_KEYWORD)
       parse_increment(line)
+    elsif line.include?(DECREMENT_KEYWORD)
+      parse_decrement(line)
     elsif line.include?(ADDITION_KEYWORD)
       parse_addition(line)
     elsif line.include?(SUBTRACTION_KEYWORD)
@@ -59,6 +62,14 @@ class Parser
     line_array = line.split(' ')
     first_word = line_array[0]
     rest_of_line = ' += 1'
+    phrase = first_word + rest_of_line
+    write(phrase)
+  end
+
+  def self.parse_decrement(line)
+    line_array = line.split(' ')
+    first_word = line_array[0]
+    rest_of_line = ' -= 1'
     phrase = first_word + rest_of_line
     write(phrase)
   end
