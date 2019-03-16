@@ -5,4 +5,4 @@ saruman = 7
 frodo += 1
 puts frodo
 
-puts frodo + saruman 
+frodo + saruman 

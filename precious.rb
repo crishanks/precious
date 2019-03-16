@@ -1,5 +1,6 @@
 require_relative 'parser.rb'
-# eventually we could take in user input so they can name their .precious files whatever they want
+#Ask user for input file name
+#Ask user for output file name
 reader_file = "middle_earth.precious"
 
 def check_extension(reader_file)
@@ -28,5 +29,5 @@ def destroy_output_file
   end
 end
 
-
 check_extension(reader_file)
+
