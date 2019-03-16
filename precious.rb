@@ -11,10 +11,13 @@ def check_extension(reader_file)
     open_file(reader_file)
   else
     raise 'This is not a *Gollum  Cough* *Gollum Cough* precious (file)!'
-    
+
   end
 end
 
+#this should be a method called parse_file in Parser class
+#keep ALL parsing in Parse, separation of responsibilities
+#we would call it by Parser.parse_file(filename)
 def open_file(filename)
   File.open(filename) do |file|
     file.each_line do |line|
@@ -30,4 +33,3 @@ def destroy_output_file
 end
 
 check_extension(reader_file)
-
