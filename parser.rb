@@ -3,7 +3,8 @@ require 'pry'
 class Parser
   WRITER_FILE = 'output.rb'
   # KEYWORDS
-  PUT_KEYWORD = 'bring forth the ring'
+  #PUT_KEYWORD = 'bring forth the ring'
+  PUT_KEYWORDS = ['bring forth the ring', 'gandalf says']
   COMMENT_KEYWORD = 'second breakfast'
   FILLER_KEYWORDS = ['is', 'has', 'was']
   ASSIGNMENT_KEYWORD = '.'
@@ -13,14 +14,18 @@ class Parser
   ADDITION_KEYWORD = 'join the fellowship'
   SUBTRACTION_KEYWORD = 'leave the fellowship'
   DIVISION_KEYWORD = 'decapitates'
+  MULTIPLICATION_KEYWORD = 'gives aid to'
 
   def self.parse_line(line)
     line = line.downcase
-    if line.include?(PUT_KEYWORD)
+    # if line.include?(PUT_KEYWORDS)
+    #   parse_put(line)
+    if PUT_KEYWORDS.any? { |word| line.include?(word) }
       parse_put(line)
     elsif line.include?(COMMENT_KEYWORD)
       parse_comment(line)
-    elsif line.include?('.') #ASSIGNMENT_KEYWORD
+    elsif FILLER_KEYWORDS.any? { |word| line.include?(word) }
+    #elsif line.include?('.') #ASSIGNMENT_KEYWORD
       parse_assignment(line)
     elsif line.include?(INCREMENT_KEYWORD)
       parse_increment(line)
@@ -32,14 +37,20 @@ class Parser
       parse_subtraction(line)
     elsif line.include?(DIVISION_KEYWORD)
       parse_division(line)
+    elsif line.include?(MULTIPLICATION_KEYWORD)
+      parse_multiplication(line)
     end
 
   end
 
   # METHODS
   def self.parse_put(line)
-    puts_string = line.gsub(PUT_KEYWORD, 'puts')
-    write(puts_string)
+    # puts_string = line.gsub(PUT_KEYWORD, 'puts')
+    # write(puts_string)
+    PUT_KEYWORDS.each do |keyword|
+      line.gsub(keyword, 'puts')
+    end
+    write(line)
   end
 
   def self.parse_comment(line)
@@ -91,6 +102,11 @@ class Parser
 
   def self.parse_division(line)
     line = line.gsub('decapitates', '/')
+    write(line)
+  end
+
+  def self.parse_multiplication(line)
+    line = line.gsub('gives aid to', '*')
     write(line)
   end
 
