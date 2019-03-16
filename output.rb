@@ -6,3 +6,5 @@ frodo += 1
 puts frodo
 
 frodo + saruman 
+sam = 3
+frodo - sam 

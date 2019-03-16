@@ -10,6 +10,7 @@ class Parser
   COMPARISON_KEYWORD = '?'
   INCREMENT_KEYWORD = 'eats lembas bread'
   ADDITION_KEYWORD = 'join the fellowship'
+  SUBTRACTION_KEYWORD = 'leave the fellowship'
 
   def self.parse_line(line)
     line = line.downcase
@@ -17,12 +18,14 @@ class Parser
       parse_put(line)
     elsif line.include?(COMMENT_KEYWORD)
       parse_comment(line)
-    elsif line.include?('.')
+    elsif line.include?('.') #ASSIGNMENT_KEYWORD
       parse_assignment(line)
     elsif line.include?(INCREMENT_KEYWORD)
       parse_increment(line)
     elsif line.include?(ADDITION_KEYWORD)
       parse_addition(line)
+    elsif line.include?(SUBTRACTION_KEYWORD)
+      parse_subtraction(line)
     end
 
   end
@@ -38,7 +41,7 @@ class Parser
     write(comment_string)
   end
 
-  # Our parse_comment method is messing up the output.rb when we run the precious.rb file. 
+  # Our parse_comment method is messing up the output.rb when we run the precious.rb file.
   # Puts and comments give an extra new line.
   def self.parse_assignment(line)
     line_array = line.split(' ')
@@ -63,6 +66,12 @@ class Parser
   def self.parse_addition(line)
     line = line.gsub('and', '+')
     line_array = line.split('join the fellowship')
+    write(line_array[0])
+  end
+
+  def self.parse_subtraction(line)
+    line = line.gsub('and', '-')
+    line_array = line.split('leave the fellowship')
     write(line_array[0])
   end
 
