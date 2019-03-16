@@ -1,4 +1,5 @@
 require_relative 'parser.rb'
+# eventually we could take in user input so they can name their .precious files whatever they want
 file = "middle_earth.precious"
 
 def check_extension(file)
