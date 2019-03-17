@@ -51,7 +51,9 @@ class Parser
     # puts_string = line.gsub(PUT_KEYWORD, 'puts')
     # write(puts_string)
     PUT_KEYWORDS.each do |keyword|
-      line.gsub(keyword, 'puts')
+      if line.include? keyword
+        line = line.gsub(keyword, 'puts')
+      end
     end
     write(line)
   end

@@ -1,12 +1,15 @@
-gandalf says "they're taking the hobbits to isengard"
+puts "they're taking the hobbits to isengard"
 
 frodo = 8
 saruman = 7
 frodo += 1
-bring forth the ring frodo
+puts frodo
 
 frodo + saruman 
+sam = 3
 frodo - sam 
 sam -= 1
 sam / saruman
+
+saruman * saruman
 
