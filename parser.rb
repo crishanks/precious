@@ -15,6 +15,10 @@ class Parser
   DIVISION_KEYWORD = 'decapitates'
   MULTIPLICATION_KEYWORD = 'gives aid to'
 
+  ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORD, FILLER_KEYWORDS, ASSIGNMENT_KEYWORD,
+    COMPARISON_KEYWORD, INCREMENT_KEYWORD, DECREMENT_KEYWORD, ADDITION_KEYWORD,
+  SUBTRACTION_KEYWORD, DIVISION_KEYWORD, MULTIPLICATION_KEYWORD]
+
   def self.parse_file(file)
     file.each_with_index do |file, index|
       file.each_line do |line|
@@ -25,31 +29,44 @@ class Parser
 
   def self.parse_line(line, index)
     line = line.downcase
-    if PUT_KEYWORDS.any? { |word| line.include?(word) }
-      parse_put(line)
-    elsif line.include?(COMMENT_KEYWORD)
-      parse_comment(line)
-    elsif FILLER_KEYWORDS.any? { |word| line.include?(word) }
-      parse_assignment(line)
-    elsif line.include?(INCREMENT_KEYWORD)
-      parse_increment(line)
-    elsif line.include?(DECREMENT_KEYWORD)
-      parse_decrement(line)
-    elsif line.include?(ADDITION_KEYWORD)
-      parse_addition(line)
-    elsif line.include?(SUBTRACTION_KEYWORD)
-      parse_subtraction(line)
-    elsif line.include?(DIVISION_KEYWORD)
-      parse_division(line)
-    elsif line.include?(MULTIPLICATION_KEYWORD)
-      parse_multiplication(line)
-    else
-      #error handeling
-      #ignore lines of length 1, its empty
-      if line.length != 1
-        abort "line #{index} has syntax error: #{line}"
-        exit
+    #error handeling
+    #ignore lines of length 1, its empty
+    if (line.length != 1 && (ALL_KEYS.flatten.any? { |keys| line.include?(keys)}))
+
+      while (ALL_KEYS.flatten.any? { |keys| line.include?(keys) })
+        puts "in loop"
+        puts line
+        if PUT_KEYWORDS.any? { |word| line.include?(word) }
+          line = parse_put(line)
+        elsif line.include?(COMMENT_KEYWORD)
+          line = parse_comment(line)
+        elsif FILLER_KEYWORDS.any? { |word| line.split(" ").include?(word) } #assignment/comparison
+          binding.pry
+          if line.include?(ASSIGNMENT_KEYWORD)
+            line = parse_assignment(line)
+          else #compairson
+            line = parse_comparison(line)
+          end
+        elsif line.include?(INCREMENT_KEYWORD)
+          line = parse_increment(line)
+        elsif line.include?(DECREMENT_KEYWORD)
+          line = parse_decrement(line)
+        elsif line.include?(ADDITION_KEYWORD)
+          line = parse_addition(line)
+        elsif line.include?(SUBTRACTION_KEYWORD)
+          line = parse_subtraction(line)
+        elsif line.include?(DIVISION_KEYWORD)
+          line = parse_division(line)
+        elsif line.include?(MULTIPLICATION_KEYWORD)
+          line = parse_multiplication(line)
+        else
+          puts line
+          write(line)
+        end
       end
+    else
+      abort "line #{index} has syntax error: #{line}"
+      exit
     end
 
   end
@@ -61,16 +78,16 @@ class Parser
         line = line.gsub(keyword, 'puts')
       end
     end
+    return line
     write(line)
   end
 
   def self.parse_comment(line)
     comment_string = line.gsub(COMMENT_KEYWORD, '#')
+    return comment_string
     write(comment_string)
   end
 
-  # Our parse_comment method is messing up the output.rb when we run the precious.rb file.
-  # Puts and comments give an extra new line.
   def self.parse_assignment(line)
     line_array = line.split(' ')
     line_array.each_with_index do |word, index|
@@ -80,7 +97,17 @@ class Parser
     end
     new_line_string = line_array.join(' ')
     final_line = new_line_string.gsub('.', '')
+    return final_line
     write(final_line)
+  end
+
+  def self.parse_comparison(line)
+    line_array = line.split(' ')
+    var1 = line_array[1]
+    var2 = line_array[2].gsub('?', "")
+    string = "#{var1} == #{var2}"
+    return string
+    write(string)
   end
 
   def self.parse_increment(line)
@@ -88,6 +115,7 @@ class Parser
     first_word = line_array[0]
     rest_of_line = ' += 1'
     phrase = first_word + rest_of_line
+    return phrase
     write(phrase)
   end
 
@@ -96,28 +124,33 @@ class Parser
     first_word = line_array[0]
     rest_of_line = ' -= 1'
     phrase = first_word + rest_of_line
+    return phrase
     write(phrase)
   end
 
   def self.parse_addition(line)
     line = line.gsub('and', '+')
     line_array = line.split('join the fellowship')
+    return line_array[0]
     write(line_array[0])
   end
 
   def self.parse_subtraction(line)
     line = line.gsub('and', '-')
     line_array = line.split('leave the fellowship')
+    return line_array[0]
     write(line_array[0])
   end
 
   def self.parse_division(line)
     line = line.gsub('decapitates', '/')
+    return line
     write(line)
   end
 
   def self.parse_multiplication(line)
     line = line.gsub('gives aid to', '*')
+    return line
     write(line)
   end
 
