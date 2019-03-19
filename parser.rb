@@ -15,16 +15,21 @@ class Parser
   DIVISION_KEYWORD = 'decapitates'
   MULTIPLICATION_KEYWORD = 'gives aid to'
 
-  def self.parse_line(line)
+  def self.parse_file(file)
+    file.each_with_index do |file, index|
+      file.each_line do |line|
+        Parser.parse_line(line, index)
+      end
+    end
+  end
+
+  def self.parse_line(line, index)
     line = line.downcase
-    # if line.include?(PUT_KEYWORDS)
-    #   parse_put(line)
     if PUT_KEYWORDS.any? { |word| line.include?(word) }
       parse_put(line)
     elsif line.include?(COMMENT_KEYWORD)
       parse_comment(line)
     elsif FILLER_KEYWORDS.any? { |word| line.include?(word) }
-    #elsif line.include?('.') #ASSIGNMENT_KEYWORD
       parse_assignment(line)
     elsif line.include?(INCREMENT_KEYWORD)
       parse_increment(line)
@@ -38,17 +43,19 @@ class Parser
       parse_division(line)
     elsif line.include?(MULTIPLICATION_KEYWORD)
       parse_multiplication(line)
-
-    #else
-    # error handling?
+    else
+      #error handeling
+      #ignore lines of length 1, its empty
+      if line.length != 1
+        abort "line #{index} has syntax error: #{line}"
+        exit
+      end
     end
 
   end
 
   # METHODS
   def self.parse_put(line)
-    # puts_string = line.gsub(PUT_KEYWORD, 'puts')
-    # write(puts_string)
     PUT_KEYWORDS.each do |keyword|
       if line.include? keyword
         line = line.gsub(keyword, 'puts')
