@@ -3,7 +3,6 @@ require 'pry'
 class Parser
   WRITER_FILE = 'output.rb'
   # KEYWORDS
-  #PUT_KEYWORD = 'bring forth the ring'
   PUT_KEYWORDS = ['bring forth the ring', 'gandalf says']
   COMMENT_KEYWORD = 'second breakfast'
   FILLER_KEYWORDS = ['is', 'has', 'was']
