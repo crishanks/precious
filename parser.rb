@@ -3,11 +3,11 @@ require 'pry'
 class Parser
   WRITER_FILE = 'output.rb'
   # KEYWORDS
-  PUT_KEYWORDS = ['bring forth the ring', 'gandalf says']
+  PUT_KEYWORDS = ['bring forth the ring', 'says']
   COMMENT_KEYWORD = 'second breakfast'
   FILLER_KEYWORDS = ['is', 'has', 'was']
   ASSIGNMENT_KEYWORD = '.'
-  COMPARISON_KEYWORD = '?'
+  #COMPARISON_KEYWORD = 'if'
   INCREMENT_KEYWORD = 'eats lembas bread'
   DECREMENT_KEYWORD = 'runs out of lembas bread'
   ADDITION_KEYWORD = 'join the fellowship'
@@ -15,8 +15,8 @@ class Parser
   DIVISION_KEYWORD = 'decapitates'
   MULTIPLICATION_KEYWORD = 'gives aid to'
 
-  ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORD, FILLER_KEYWORDS, ASSIGNMENT_KEYWORD,
-    COMPARISON_KEYWORD, INCREMENT_KEYWORD, DECREMENT_KEYWORD, ADDITION_KEYWORD,
+  ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORD, ASSIGNMENT_KEYWORD,
+     INCREMENT_KEYWORD, DECREMENT_KEYWORD, ADDITION_KEYWORD,
   SUBTRACTION_KEYWORD, DIVISION_KEYWORD, MULTIPLICATION_KEYWORD]
 
   def self.parse_file(file)
@@ -28,25 +28,20 @@ class Parser
   end
 
   def self.parse_line(line, index)
-    line = line.downcase
+    line = purify(line)
+    puts line
     #error handeling
     #ignore lines of length 1, its empty
     if (line.length != 1 && (ALL_KEYS.flatten.any? { |keys| line.include?(keys)}))
-
       while (ALL_KEYS.flatten.any? { |keys| line.include?(keys) })
-        puts "in loop"
-        puts line
         if PUT_KEYWORDS.any? { |word| line.include?(word) }
           line = parse_put(line)
         elsif line.include?(COMMENT_KEYWORD)
           line = parse_comment(line)
-        elsif FILLER_KEYWORDS.any? { |word| line.split(" ").include?(word) } #assignment/comparison
-          binding.pry
-          if line.include?(ASSIGNMENT_KEYWORD)
-            line = parse_assignment(line)
-          else #compairson
-            line = parse_comparison(line)
-          end
+        elsif line.include?(ASSIGNMENT_KEYWORD)
+          line = parse_assignment(line)
+        # elsif line.include?(COMPARISON_KEYWORD)
+        #   line = parse_comparison(line)
         elsif line.include?(INCREMENT_KEYWORD)
           line = parse_increment(line)
         elsif line.include?(DECREMENT_KEYWORD)
@@ -59,14 +54,15 @@ class Parser
           line = parse_division(line)
         elsif line.include?(MULTIPLICATION_KEYWORD)
           line = parse_multiplication(line)
-        else
-          puts line
-          write(line)
         end
       end
+      #puts line
+      write(line)
     else
-      abort "line #{index} has syntax error: #{line}"
-      exit
+      if line.length != 1
+        abort "line #{index + 1} has a syntax error: #{line}"
+        exit
+      end
     end
 
   end
@@ -161,6 +157,35 @@ class Parser
       writer_file = File.open(WRITER_FILE, 'w')
     end
     writer_file.write(str + "\n")
+  end
+
+  def self.purify(phrase)
+    phrase_array = phrase.split(' ')
+    important_parts = []
+    phrase_array.each_with_index do |word, index|
+      if ALL_KEYS.flatten.include? word
+        important_parts.push(word)
+      elsif /[[:upper:]]/.match(word[0]) #uppercase
+        important_parts.push(word)
+      end
+    end
+    important_parts.join(" ")
+  end
+
+  def check_string(phrase)
+    phrase_array = phrase.split("")
+    quote = ""
+    is_quote = false
+    phrase_array.each_with_index do |letter|
+      puts letter
+      if is_quote == true ||
+        quote << letter
+      end
+      if letter == '"'
+        is_quote = !is_quote
+      end
+    end
+    puts quote[0...-1]
   end
 
 end

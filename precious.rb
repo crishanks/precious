@@ -27,3 +27,9 @@ def destroy_output_file(writer_file)
 end
 
 check_extension(reader_file, writer_file)
+
+# try to run ruby file
+# if you get an error
+# caller_infos = caller.first.split(":")
+# puts "#{caller_infos[0]} : #{caller_infos[1]} : #{str}"
+# might need a mapper class that keeps track of which line nums match between files
