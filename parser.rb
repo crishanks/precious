@@ -4,20 +4,19 @@ class Parser
   WRITER_FILE = 'output.rb'
   # KEYWORDS
   PUT_KEYWORDS = ['bring forth the ring', 'says']
-  COMMENT_KEYWORD = 'second breakfast'
+  COMMENT_KEYWORDS = ['second breakfast']
   ASSIGNMENT_KEYWORDS = ['is', 'has', 'was']
-  #COMPARISON_KEYWORD = 'if'
-  INCREMENT_KEYWORD = 'eats lembas bread'
-  DECREMENT_KEYWORD = 'runs out of lembas bread'
-  ADDITION_KEYWORD = 'joins the fellowship'
-  SUBTRACTION_KEYWORD = 'leaves the fellowship'
-  DIVISION_KEYWORD = 'decapitates'
-  MULTIPLICATION_KEYWORD = 'gives aid to'
+  INCREMENT_KEYWORDS = ['eats lembas bread']
+  DECREMENT_KEYWORDS = ['runs out of lembas bread']
+  ADDITION_KEYWORDS = ['joins the fellowship', 'and']
+  SUBTRACTION_KEYWORDS = ['leaves the fellowship']
+  DIVISION_KEYWORDS = ['decapitates']
+  MULTIPLICATION_KEYWORDS = ['gives aid to']
   OPERATOR_KEYWORDS = ['+', '-', '=', '*', '/', '+=', '-=', 'puts']
 
-  ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORD, ASSIGNMENT_KEYWORDS,
-     INCREMENT_KEYWORD, DECREMENT_KEYWORD, ADDITION_KEYWORD,
-  SUBTRACTION_KEYWORD, DIVISION_KEYWORD, MULTIPLICATION_KEYWORD]
+  ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
+     INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
+  SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS]
 
   def self.parse_file(file)
     file.each_with_index do |file, index|
@@ -28,30 +27,28 @@ class Parser
   end
 
   def self.parse_line(line, index)
+
+    #check if there are strings in line
     quote = ""
     if line.include? '"'
       quote = check_for_string(line)
       line = line.gsub(quote, 'quote_placeholder')
     end
 
+    #get rid of special chars
     line_array = line.split(" ")
     line_array.each_with_index do |word, index|
       line_array[index] = purify(word)
     end
 
+    #check for keywords
     line = line_array.join(" ")
     line = check_for_keywords(line)
 
-    important_words = []
-    line_array = line.split(" ")
-    line_array.each do |word|
-      valuable_word = valuable?(word)
-      if valuable_word
-        important_words << word
-      end
-    end
-    line = important_words.join(" ")
+    #remove extra english words
+    line = only_valuable_words(line)
 
+    #put string back into line
     if line.include? ('"quote_placeholder"')
       line = line.gsub('quote_placeholder', quote)
     end
@@ -68,30 +65,28 @@ class Parser
       if PUT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_put(line)
       end
-      if line.include?(COMMENT_KEYWORD)
+      if COMMENT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_comment(line)
       end
       if ASSIGNMENT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_assignment(line)
       end
-      # elsif line.include?(COMPARISON_KEYWORD)
-      #   line = parse_comparison(line)
-      if line.include?(INCREMENT_KEYWORD)
+      if INCREMENT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_increment(line)
       end
-      if line.include?(DECREMENT_KEYWORD)
+      if DECREMENT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_decrement(line)
       end
-      if line.include?(ADDITION_KEYWORD)
+      if ADDITION_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_addition(line)
       end
-      if line.include?(SUBTRACTION_KEYWORD)
+      if SUBTRACTION_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_subtraction(line)
       end
-      if line.include?(DIVISION_KEYWORD)
+      if DIVISION_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_division(line)
       end
-      if line.include?(MULTIPLICATION_KEYWORD)
+      if MULTIPLICATION_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_multiplication(line)
       end
     end
@@ -110,7 +105,11 @@ class Parser
   end
 
   def self.parse_comment(line)
-    comment_string = line.gsub(COMMENT_KEYWORD, '#')
+    COMMENT_KEYWORD.each do |keyword|
+      if line.include? keyword
+        line = line.gsub(keyword, '#')
+      end
+    end
     return comment_string
     write(comment_string)
   end
@@ -123,54 +122,72 @@ class Parser
     write(line)
   end
 
-  def self.parse_comparison(line)
-    line_array = line.split(' ')
-    var1 = line_array[1]
-    var2 = line_array[2].gsub('?', "")
-    string = "#{var1} == #{var2}"
-    return string
-    write(string)
-  end
+  # def self.parse_comparison(line)
+  #   PUT_KEYWORDS.each do |keyword|
+  #     if line.include? keyword
+  #       line = line.gsub(keyword, '==')
+  #     end
+  #   end
+  #   return string
+  #   write(string)
+  # end
 
   def self.parse_increment(line)
-    line_array = line.split(' ')
-    first_word = line_array[0]
-    rest_of_line = ' += 1'
-    phrase = first_word + rest_of_line
-    return phrase
-    write(phrase)
+    INCREMENT_KEYWORDS.each do |keyword|
+      if line.include? keyword
+        line = line.gsub(keyword, '+=')
+      end
+    end
+    return line
+    write(line)
   end
 
   def self.parse_decrement(line)
-    line_array = line.split(' ')
-    first_word = line_array[0]
-    rest_of_line = ' -= 1'
-    phrase = first_word + rest_of_line
-    return phrase
-    write(phrase)
+    DECREMENT_KEYWORDS.each do |keyword|
+      if line.include? keyword
+        line = line.gsub(keyword, '-=')
+      end
+    end
+    return line
+    write(line)
   end
 
   def self.parse_addition(line)
-    line = line.gsub(ADDITION_KEYWORD, '+')
+    ADDITION_KEYWORDS.each do |keyword|
+      if line.include? keyword
+        line = line.gsub(keyword, '+')
+      end
+    end
     return line
     write(line)
   end
 
   def self.parse_subtraction(line)
-    line = line.gsub('and', '-')
-    line_array = line.split('leave the fellowship')
-    return line_array[0]
-    write(line_array[0])
+    SUBTRACTION_KEYWORDS.each do |keyword|
+      if line.include? keyword
+        line = line.gsub(keyword, '-')
+      end
+    end
+    return line
+    write(line)
   end
 
   def self.parse_division(line)
-    line = line.gsub('decapitates', '/')
+    DIVISION_KEYWORDS.each do |keyword|
+      if line.include? keyword
+        line = line.gsub(keyword, '/')
+      end
+    end
     return line
     write(line)
   end
 
   def self.parse_multiplication(line)
-    line = line.gsub('gives aid to', '*')
+    MULTIPLICATION_KEYWORDS.each do |keyword|
+      if line.include? keyword
+        line = line.gsub(keyword, '*')
+      end
+    end
     return line
     write(line)
   end
@@ -186,6 +203,18 @@ class Parser
 
   def self.purify(word)
     word = word.gsub(/[!@%&.]/,'') # get rid of special chars
+  end
+
+  def self.only_valuable_words(line)
+    important_words = []
+    line_array = line.split(" ")
+    line_array.each do |word|
+      valuable_word = valuable?(word)
+      if valuable_word
+        important_words << word
+      end
+    end
+    line = important_words.join(" ")
   end
 
   def self.valuable?(word)
