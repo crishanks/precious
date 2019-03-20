@@ -18,6 +18,12 @@ class Parser
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
   SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS]
 
+  MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
+    {'=': ASSIGNMENT_KEYWORDS}, {'+=': INCREMENT_KEYWORDS},
+    {'-=': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
+    {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
+   {'/': DIVISION_KEYWORDS}]
+
   def self.parse_file(file)
     file.each_with_index do |file, index|
       file.each_line do |line|
@@ -38,10 +44,9 @@ class Parser
     #check if line is a comment
     comment = ""
     if COMMENT_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse_comment(line)
+      line = parse(line, COMMENT_KEYWORDS)
       comment = get_comment(line)
       line = line.gsub(comment, 'comment_placeholder')
-      puts line
     end
 
     #get rid of special chars
@@ -75,135 +80,143 @@ class Parser
     if line.length == 1
       write("\n")
     else
-      # if COMMENT_KEYWORDS.any? { |word| line.include? word}
-      #   line = parse_comment(line)
-      # end
       if PUT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_put(line)
+        line = parse(line, PUT_KEYWORDS)
       end
       if ASSIGNMENT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_assignment(line)
+        line = parse(line, ASSIGNMENT_KEYWORDS)
       end
       if INCREMENT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_increment(line)
+        line = parse(line, INCREMENT_KEYWORDS)
       end
       if DECREMENT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_decrement(line)
+        line = parse(line, DECREMENT_KEYWORDS)
       end
       if ADDITION_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_addition(line)
+        line = parse(line, ADDITION_KEYWORDS)
       end
       if SUBTRACTION_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_subtraction(line)
+        line = parse(line, SUBTRACTION_KEYWORDS)
       end
       if DIVISION_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_division(line)
+        line = parse(line, DIVISION_KEYWORDS)
       end
       if MULTIPLICATION_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_multiplication(line)
+        line = parse(line, MULTIPLICATION_KEYWORDS)
       end
     end
     line
   end
 
   # METHODS
-  def self.parse_put(line)
-    PUT_KEYWORDS.each do |keyword|
+  def self.parse(line, keywords)
+    keywords.each do |keyword|
       if line.include? keyword
-        line = line.gsub(keyword, 'puts')
+        replacement = find_replacement(keywords)
+        line = line.gsub(keyword, replacement)
       end
     end
     return line
     write(line)
   end
 
-  def self.parse_comment(line)
-    COMMENT_KEYWORDS.each do |keyword|
-      if line.include? keyword
-        line = line.gsub(keyword, '#')
-      end
-    end
-    return line
-    write(line)
-  end
-
-  def self.parse_assignment(line)
-    ASSIGNMENT_KEYWORDS.each do |key|
-      line = line.gsub(key, "=")
-    end
-    return line
-    write(line)
-  end
-
-  # def self.parse_comparison(line)
+  # def self.parse_put(line)
   #   PUT_KEYWORDS.each do |keyword|
   #     if line.include? keyword
-  #       line = line.gsub(keyword, '==')
+  #       line = line.gsub(keyword, 'puts')
   #     end
   #   end
-  #   return string
-  #   write(string)
+  #   return line
+  #   write(line)
   # end
-
-  def self.parse_increment(line)
-    INCREMENT_KEYWORDS.each do |keyword|
-      if line.include? keyword
-        line = line.gsub(keyword, '+=')
-      end
-    end
-    return line
-    write(line)
-  end
-
-  def self.parse_decrement(line)
-    DECREMENT_KEYWORDS.each do |keyword|
-      if line.include? keyword
-        line = line.gsub(keyword, '-=')
-      end
-    end
-    return line
-    write(line)
-  end
-
-  def self.parse_addition(line)
-    ADDITION_KEYWORDS.each do |keyword|
-      if line.include? keyword
-        line = line.gsub(keyword, '+')
-      end
-    end
-    return line
-    write(line)
-  end
-
-  def self.parse_subtraction(line)
-    SUBTRACTION_KEYWORDS.each do |keyword|
-      if line.include? keyword
-        line = line.gsub(keyword, '-')
-      end
-    end
-    return line
-    write(line)
-  end
-
-  def self.parse_division(line)
-    DIVISION_KEYWORDS.each do |keyword|
-      if line.include? keyword
-        line = line.gsub(keyword, '/')
-      end
-    end
-    return line
-    write(line)
-  end
-
-  def self.parse_multiplication(line)
-    MULTIPLICATION_KEYWORDS.each do |keyword|
-      if line.include? keyword
-        line = line.gsub(keyword, '*')
-      end
-    end
-    return line
-    write(line)
-  end
+  #
+  # def self.parse_comment(line)
+  #   COMMENT_KEYWORDS.each do |keyword|
+  #     if line.include? keyword
+  #       line = line.gsub(keyword, '#')
+  #     end
+  #   end
+  #   return line
+  #   write(line)
+  # end
+  #
+  # def self.parse_assignment(line)
+  #   ASSIGNMENT_KEYWORDS.each do |key|
+  #     line = line.gsub(key, "=")
+  #   end
+  #   return line
+  #   write(line)
+  # end
+  #
+  # # def self.parse_comparison(line)
+  # #   PUT_KEYWORDS.each do |keyword|
+  # #     if line.include? keyword
+  # #       line = line.gsub(keyword, '==')
+  # #     end
+  # #   end
+  # #   return string
+  # #   write(string)
+  # # end
+  #
+  # def self.parse_increment(line)
+  #   INCREMENT_KEYWORDS.each do |keyword|
+  #     if line.include? keyword
+  #       line = line.gsub(keyword, '+=')
+  #     end
+  #   end
+  #   return line
+  #   write(line)
+  # end
+  #
+  # def self.parse_decrement(line)
+  #   DECREMENT_KEYWORDS.each do |keyword|
+  #     if line.include? keyword
+  #       line = line.gsub(keyword, '-=')
+  #     end
+  #   end
+  #   return line
+  #   write(line)
+  # end
+  #
+  # def self.parse_addition(line)
+  #   ADDITION_KEYWORDS.each do |keyword|
+  #     if line.include? keyword
+  #       line = line.gsub(keyword, '+')
+  #     end
+  #   end
+  #   return line
+  #   write(line)
+  # end
+  #
+  # def self.parse_subtraction(line)
+  #   SUBTRACTION_KEYWORDS.each do |keyword|
+  #     if line.include? keyword
+  #       line = line.gsub(keyword, '-')
+  #     end
+  #   end
+  #   return line
+  #   write(line)
+  # end
+  #
+  # def self.parse_division(line)
+  #   DIVISION_KEYWORDS.each do |keyword|
+  #     if line.include? keyword
+  #       line = line.gsub(keyword, '/')
+  #     end
+  #   end
+  #   return line
+  #   write(line)
+  # end
+  #
+  # def self.parse_multiplication(line)
+  #   MULTIPLICATION_KEYWORDS.each do |keyword|
+  #     if line.include? keyword
+  #       line = line.gsub(keyword, '*')
+  #     end
+  #   end
+  #   return line
+  #   write(line)
+  # end
 
   def self.write(str)
     if File.exist?(WRITER_FILE)
@@ -266,6 +279,16 @@ class Parser
       index += 1
     end
     comment
+  end
+
+  def self.find_replacement(keywords)
+    MAP.each do |hash|
+      hash.each do |key, value|
+        if value == keywords
+          return key.to_s
+        end
+      end
+    end
   end
 
 
