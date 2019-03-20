@@ -24,3 +24,9 @@ sam = sam + frodo
 end
 
 
+
+legolas = true
+
+
+balrog = false
+

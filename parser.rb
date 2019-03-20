@@ -15,19 +15,21 @@ class Parser
   COMPARISON_KEYWORDS = ['as strong as']
   CONDITION_KEYWORDS = ['does', 'if', 'will']
   END_KEYWORDS = ['you shall not pass']
-  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end']
+  TRUE_KEYWORDS = ['precious']
+  FALSE_KEYWORDS = ['not precious']
+  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end', 'true', 'false']
 
-  ALicia_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
+  ALICIA_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
   SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS,
-  COMPARISON_KEYWORDS, CONDITION_KEYWORDS, END_KEYWORDS]
+  COMPARISON_KEYWORDS, CONDITION_KEYWORDS, END_KEYWORDS, TRUE_KEYWORDS, FALSE_KEYWORDS]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
     {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
     {'-=1': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
     {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
    {'/': DIVISION_KEYWORDS}, {'==': COMPARISON_KEYWORDS},
-   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}]
+   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}, {'true': TRUE_KEYWORDS}, {'false': FALSE_KEYWORDS}]
 
   def self.parse_file(file)
     str = ""
@@ -71,6 +73,7 @@ class Parser
       end
 
       #check for keywords
+      #calls if statements
       line = line_array.join(" ")
       line = check_for_keywords(line)
 
@@ -124,6 +127,12 @@ class Parser
     end
     if END_KEYWORDS.any? { |word| line.include?(word) }
       line = parse(line, END_KEYWORDS)
+    end
+    if FALSE_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, FALSE_KEYWORDS)
+    end
+    if TRUE_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, TRUE_KEYWORDS)
     end
     line
   end
