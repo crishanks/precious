@@ -12,15 +12,15 @@ class Parser
   SUBTRACTION_KEYWORDS = ['leaves the fellowship']
   DIVISION_KEYWORDS = ['decapitates']
   MULTIPLICATION_KEYWORDS = ['gives aid to']
-  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=', '-=', 'puts']
+  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts']
 
   ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
   SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
-    {'=': ASSIGNMENT_KEYWORDS}, {'+=': INCREMENT_KEYWORDS},
-    {'-=': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
+    {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
+    {'-=1': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
     {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
    {'/': DIVISION_KEYWORDS}]
 
@@ -34,76 +34,77 @@ class Parser
 
   def self.parse_line(line, index)
 
-    #check if there are strings in line
-    quote = ""
-    if line.include? '"'
-      quote = get_string(line)
-      line = line.gsub(quote, 'quote_placeholder')
-    end
-
-    #check if line is a comment
-    comment = ""
-    if COMMENT_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, COMMENT_KEYWORDS)
-      comment = get_comment(line)
-      line = line.gsub(comment, 'comment_placeholder')
-    end
-
-    #get rid of special chars
-    line_array = line.split(" ")
-    line_array.each_with_index do |word, index|
-      line_array[index] = purify(word)
-    end
-
-    #check for keywords
-    line = line_array.join(" ")
-    line = check_for_keywords(line)
-
-    #remove extra english words
-    line = only_valuable_words(line)
-
-    #put string back into line
-    if line.include? ('"quote_placeholder"')
-      line = line.gsub('quote_placeholder', quote)
-    end
-
-    if line.include? ('comment_placeholder')
-      line = line.gsub('comment_placeholder', comment)
-    end
-    puts "end line: #{line}"
-
-  end
-
-  def self.check_for_keywords(line)
     #error handeling
     #ignore lines of length 1, its empty
     if line.length == 1
-      write("\n")
+      write("#{line}")
     else
-      if PUT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse(line, PUT_KEYWORDS)
+
+      #check if there are strings in line
+      quote = ""
+      if line.include? '"'
+        quote = get_string(line)
+        line = line.gsub(quote, 'quote_placeholder')
       end
-      if ASSIGNMENT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse(line, ASSIGNMENT_KEYWORDS)
+
+      #check if line is a comment
+      comment = ""
+      if COMMENT_KEYWORDS.any? { |word| line.include?(word) }
+        line = parse(line, COMMENT_KEYWORDS)
+        comment = get_comment(line)
+        line = line.gsub(comment, 'comment_placeholder')
       end
-      if INCREMENT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse(line, INCREMENT_KEYWORDS)
+
+      #get rid of special chars
+      line_array = line.split(" ")
+      line_array.each_with_index do |word, index|
+        line_array[index] = purify(word)
       end
-      if DECREMENT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse(line, DECREMENT_KEYWORDS)
+
+      #check for keywords
+      line = line_array.join(" ")
+      line = check_for_keywords(line)
+
+      #remove extra english words
+      line = only_valuable_words(line)
+
+      #put string back into line
+      if line.include? ('"quote_placeholder"')
+        line = line.gsub('quote_placeholder', quote)
       end
-      if ADDITION_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse(line, ADDITION_KEYWORDS)
+
+      if line.include? ('comment_placeholder')
+        line = line.gsub('comment_placeholder', comment)
       end
-      if SUBTRACTION_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse(line, SUBTRACTION_KEYWORDS)
-      end
-      if DIVISION_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse(line, DIVISION_KEYWORDS)
-      end
-      if MULTIPLICATION_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse(line, MULTIPLICATION_KEYWORDS)
-      end
+      #puts "end line: #{line}"
+      write("#{line}")
+    end
+  end
+
+  def self.check_for_keywords(line)
+    if PUT_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, PUT_KEYWORDS)
+    end
+    if ASSIGNMENT_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, ASSIGNMENT_KEYWORDS)
+    end
+    if INCREMENT_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, INCREMENT_KEYWORDS)
+    end
+    if DECREMENT_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, DECREMENT_KEYWORDS)
+    end
+    if ADDITION_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, ADDITION_KEYWORDS)
+    end
+    if SUBTRACTION_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, SUBTRACTION_KEYWORDS)
+    end
+    if DIVISION_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, DIVISION_KEYWORDS)
+    end
+    if MULTIPLICATION_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, MULTIPLICATION_KEYWORDS)
     end
     line
   end
@@ -117,7 +118,6 @@ class Parser
       end
     end
     return line
-    write(line)
   end
 
   def self.write(str)
