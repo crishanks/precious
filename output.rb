@@ -18,5 +18,8 @@ Saruman * Saruman
 Gollum + Frodo Mordor
 
 
+if Gollum == Frodo
+
+
 
 

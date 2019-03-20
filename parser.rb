@@ -12,17 +12,19 @@ class Parser
   SUBTRACTION_KEYWORDS = ['leaves the fellowship']
   DIVISION_KEYWORDS = ['decapitates']
   MULTIPLICATION_KEYWORDS = ['gives aid to']
-  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts']
+  COMPARISON_KEYWORDS = ['as strong as']
+  CONDITION_KEYWORDS = ['does', 'if', 'will']
+  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if']
 
   ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
-  SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS]
+  SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS, COMPARISON_KEYWORDS, CONDITION_KEYWORDS]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
     {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
     {'-=1': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
     {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
-   {'/': DIVISION_KEYWORDS}]
+   {'/': DIVISION_KEYWORDS}, {'==': COMPARISON_KEYWORDS}, {'if': CONDITION_KEYWORDS}]
 
   def self.parse_file(file)
     str = ""
@@ -110,6 +112,12 @@ class Parser
     end
     if MULTIPLICATION_KEYWORDS.any? { |word| line.include?(word) }
       line = parse(line, MULTIPLICATION_KEYWORDS)
+    end
+    if COMPARISON_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, COMPARISON_KEYWORDS)
+    end
+    if CONDITION_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, CONDITION_KEYWORDS)
     end
     line
   end
