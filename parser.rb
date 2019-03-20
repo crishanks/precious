@@ -25,11 +25,14 @@ class Parser
    {'/': DIVISION_KEYWORDS}]
 
   def self.parse_file(file)
+    str = ""
     file.each_with_index do |file, index|
       file.each_line do |line|
-        Parser.parse_line(line, index)
+        line = Parser.parse_line(line, index)
+        str << (line + "\n")
       end
     end
+    write(str)
   end
 
   def self.parse_line(line, index)
@@ -37,7 +40,8 @@ class Parser
     #error handeling
     #ignore lines of length 1, its empty
     if line.length == 1
-      write("#{line}")
+      # write("#{line}")
+      return line
     else
 
       #check if there are strings in line
@@ -77,7 +81,8 @@ class Parser
         line = line.gsub('comment_placeholder', comment)
       end
       #puts "end line: #{line}"
-      write("#{line}")
+      # write("#{line}")
+      return line
     end
   end
 

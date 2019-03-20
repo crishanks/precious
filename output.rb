@@ -15,6 +15,8 @@ Frodo - Sam
 Sam -=1
 Sam / Saruman
 Saruman * Saruman
+Gollum + Frodo Mordor
+
 
 
 
