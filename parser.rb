@@ -28,42 +28,54 @@ class Parser
   end
 
   def self.parse_line(line, index)
+    quote = ""
+    if line.include? '"'
+      quote = check_for_string(line)
+      puts "quote: #{quote}"
+      line = line.gsub(quote, 'quote_placeholder')
+      puts line
+    end
     line = purify(line)
-    puts line
+    puts " purified line: #{line}"
     #error handeling
     #ignore lines of length 1, its empty
-    if (line.length != 1 && (ALL_KEYS.flatten.any? { |keys| line.include?(keys)}))
-      while (ALL_KEYS.flatten.any? { |keys| line.include?(keys) })
-        if PUT_KEYWORDS.any? { |word| line.include?(word) }
-          line = parse_put(line)
-        elsif line.include?(COMMENT_KEYWORD)
-          line = parse_comment(line)
-        elsif line.include?(ASSIGNMENT_KEYWORD)
-          line = parse_assignment(line)
-        # elsif line.include?(COMPARISON_KEYWORD)
-        #   line = parse_comparison(line)
-        elsif line.include?(INCREMENT_KEYWORD)
-          line = parse_increment(line)
-        elsif line.include?(DECREMENT_KEYWORD)
-          line = parse_decrement(line)
-        elsif line.include?(ADDITION_KEYWORD)
-          line = parse_addition(line)
-        elsif line.include?(SUBTRACTION_KEYWORD)
-          line = parse_subtraction(line)
-        elsif line.include?(DIVISION_KEYWORD)
-          line = parse_division(line)
-        elsif line.include?(MULTIPLICATION_KEYWORD)
-          line = parse_multiplication(line)
-        end
-      end
-      #puts line
-      write(line)
+    if line.length == 1
+      write("\n")
     else
-      if line.length != 1
-        abort "line #{index + 1} has a syntax error: #{line}"
-        exit
+      if PUT_KEYWORDS.any? { |word| line.include?(word) }
+        line = parse_put(line)
+      end
+      if line.include?(COMMENT_KEYWORD)
+        line = parse_comment(line)
+      end
+      if line.include?(ASSIGNMENT_KEYWORD)
+        line = parse_assignment(line)
+      end
+      # elsif line.include?(COMPARISON_KEYWORD)
+      #   line = parse_comparison(line)
+      if line.include?(INCREMENT_KEYWORD)
+        line = parse_increment(line)
+      end
+      if line.include?(DECREMENT_KEYWORD)
+        line = parse_decrement(line)
+      end
+      if line.include?(ADDITION_KEYWORD)
+        line = parse_addition(line)
+      end
+      if line.include?(SUBTRACTION_KEYWORD)
+        line = parse_subtraction(line)
+      end
+      if line.include?(DIVISION_KEYWORD)
+        line = parse_division(line)
+      end
+      if line.include?(MULTIPLICATION_KEYWORD)
+        line = parse_multiplication(line)
       end
     end
+    if line.include? ('"quote_placeholder"')
+      line = line.gsub('quote_placeholder', quote)
+    end
+    puts "end line: #{line}"
 
   end
 
@@ -162,33 +174,33 @@ class Parser
   def self.purify(phrase)
     phrase_array = phrase.split(' ')
     important_parts = []
+    #puts ALL_KEYS.flatten
     phrase_array.each_with_index do |word, index|
-      if ALL_KEYS.flatten.include? word
+      if (ALL_KEYS.flatten).include? word
         important_parts.push(word)
       elsif /[[:upper:]]/.match(word[0]) #uppercase
+        important_parts.push(word)
+      elsif word == '"quote_placeholder"'
         important_parts.push(word)
       end
     end
     important_parts.join(" ")
   end
 
-  def check_string(phrase)
-    phrase_array = phrase.split("")
+  def self.check_for_string(phrase)
+    phrase_array = phrase.split('')
+    index = phrase_array.find_index { |i| i == '"'} + 1
     quote = ""
-    is_quote = false
-    phrase_array.each_with_index do |letter|
-      puts letter
-      if is_quote == true ||
-        quote << letter
-      end
-      if letter == '"'
-        is_quote = !is_quote
-      end
+    while phrase_array[index] != '"'
+      quote << phrase_array[index]
+      index += 1
     end
-    puts quote[0...-1]
+    quote
   end
 
 end
+
+
 
 # Future Functionalilty
 # 1. For doing multiple operations on a line
