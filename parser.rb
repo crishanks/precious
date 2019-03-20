@@ -5,17 +5,17 @@ class Parser
   # KEYWORDS
   PUT_KEYWORDS = ['bring forth the ring', 'says']
   COMMENT_KEYWORD = 'second breakfast'
-  FILLER_KEYWORDS = ['is', 'has', 'was']
-  ASSIGNMENT_KEYWORD = '.'
+  ASSIGNMENT_KEYWORDS = ['is', 'has', 'was']
   #COMPARISON_KEYWORD = 'if'
   INCREMENT_KEYWORD = 'eats lembas bread'
   DECREMENT_KEYWORD = 'runs out of lembas bread'
-  ADDITION_KEYWORD = 'join the fellowship'
-  SUBTRACTION_KEYWORD = 'leave the fellowship'
+  ADDITION_KEYWORD = 'joins the fellowship'
+  SUBTRACTION_KEYWORD = 'leaves the fellowship'
   DIVISION_KEYWORD = 'decapitates'
   MULTIPLICATION_KEYWORD = 'gives aid to'
+  OPERATOR_KEYWORDS = ['+', '-', '=', '*', '/', '+=', '-=', 'puts']
 
-  ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORD, ASSIGNMENT_KEYWORD,
+  ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORD, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORD, DECREMENT_KEYWORD, ADDITION_KEYWORD,
   SUBTRACTION_KEYWORD, DIVISION_KEYWORD, MULTIPLICATION_KEYWORD]
 
@@ -31,12 +31,35 @@ class Parser
     quote = ""
     if line.include? '"'
       quote = check_for_string(line)
-      puts "quote: #{quote}"
       line = line.gsub(quote, 'quote_placeholder')
-      puts line
     end
-    line = purify(line)
-    puts " purified line: #{line}"
+
+    line_array = line.split(" ")
+    line_array.each_with_index do |word, index|
+      line_array[index] = purify(word)
+    end
+
+    line = line_array.join(" ")
+    line = check_for_keywords(line)
+
+    important_words = []
+    line_array = line.split(" ")
+    line_array.each do |word|
+      valuable_word = valuable?(word)
+      if valuable_word
+        important_words << word
+      end
+    end
+    line = important_words.join(" ")
+
+    if line.include? ('"quote_placeholder"')
+      line = line.gsub('quote_placeholder', quote)
+    end
+    puts "end line: #{line}"
+
+  end
+
+  def self.check_for_keywords(line)
     #error handeling
     #ignore lines of length 1, its empty
     if line.length == 1
@@ -48,7 +71,7 @@ class Parser
       if line.include?(COMMENT_KEYWORD)
         line = parse_comment(line)
       end
-      if line.include?(ASSIGNMENT_KEYWORD)
+      if ASSIGNMENT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_assignment(line)
       end
       # elsif line.include?(COMPARISON_KEYWORD)
@@ -72,11 +95,7 @@ class Parser
         line = parse_multiplication(line)
       end
     end
-    if line.include? ('"quote_placeholder"')
-      line = line.gsub('quote_placeholder', quote)
-    end
-    puts "end line: #{line}"
-
+    line
   end
 
   # METHODS
@@ -97,16 +116,11 @@ class Parser
   end
 
   def self.parse_assignment(line)
-    line_array = line.split(' ')
-    line_array.each_with_index do |word, index|
-      if FILLER_KEYWORDS.include?(word)
-        line_array[index] = '='
-      end
+    ASSIGNMENT_KEYWORDS.each do |key|
+      line = line.gsub(key, "=")
     end
-    new_line_string = line_array.join(' ')
-    final_line = new_line_string.gsub('.', '')
-    return final_line
-    write(final_line)
+    return line
+    write(line)
   end
 
   def self.parse_comparison(line)
@@ -137,10 +151,9 @@ class Parser
   end
 
   def self.parse_addition(line)
-    line = line.gsub('and', '+')
-    line_array = line.split('join the fellowship')
-    return line_array[0]
-    write(line_array[0])
+    line = line.gsub(ADDITION_KEYWORD, '+')
+    return line
+    write(line)
   end
 
   def self.parse_subtraction(line)
@@ -171,20 +184,22 @@ class Parser
     writer_file.write(str + "\n")
   end
 
-  def self.purify(phrase)
-    phrase_array = phrase.split(' ')
-    important_parts = []
-    #puts ALL_KEYS.flatten
-    phrase_array.each_with_index do |word, index|
-      if (ALL_KEYS.flatten).include? word
-        important_parts.push(word)
-      elsif /[[:upper:]]/.match(word[0]) #uppercase
-        important_parts.push(word)
-      elsif word == '"quote_placeholder"'
-        important_parts.push(word)
-      end
+  def self.purify(word)
+    word = word.gsub(/[!@%&.]/,'') # get rid of special chars
+  end
+
+  def self.valuable?(word)
+    valuable = false
+    if /[[:upper:]]/.match(word[0]) #if variable
+      valuable = true
+    elsif word == '"quote_placeholder"' #if string
+      valuable = true
+    elsif word.to_i.to_s == word #if num
+      valuable = true
+    elsif OPERATOR_KEYWORDS.include? word #if operator
+      valuable = true
     end
-    important_parts.join(" ")
+    valuable
   end
 
   def self.check_for_string(phrase)
@@ -198,15 +213,5 @@ class Parser
     quote
   end
 
+
 end
-
-
-
-# Future Functionalilty
-# 1. For doing multiple operations on a line
-# Changed Version of parse_line method
-# - While loop - while there are keywords in the line
-#  - create a variable that would store the updated string
-#  - do if statements (ex: if line.include?(is)...)
-#  - call the corresponding parse_ methods. Instead of writing in those, we would return a value
-# - after the loop we write the string to the output.rb file
