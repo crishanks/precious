@@ -15,6 +15,3 @@ Frodo - Sam
 Sam -=1
 Sam / Saruman
 Saruman * Saruman
-
-
-
