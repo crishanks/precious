@@ -39,7 +39,7 @@ class Parser
     str = ""
     file.each_with_index do |file, index|
       file.each_line do |line|
-        line = Parser.parse_line(line, index)
+        line = parse_line(line, index)
         str << (line + "\n")
       end
     end
@@ -99,53 +99,10 @@ class Parser
   end
 
   def self.check_for_keywords(line)
-    if PUT_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, PUT_KEYWORDS)
-    end
-    if ASSIGNMENT_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, ASSIGNMENT_KEYWORDS)
-    end
-    if INCREMENT_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, INCREMENT_KEYWORDS)
-    end
-    if DECREMENT_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, DECREMENT_KEYWORDS)
-    end
-    if ADDITION_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, ADDITION_KEYWORDS)
-    end
-    if SUBTRACTION_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, SUBTRACTION_KEYWORDS)
-    end
-    if DIVISION_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, DIVISION_KEYWORDS)
-    end
-    if MULTIPLICATION_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, MULTIPLICATION_KEYWORDS)
-    end
-    if COMPARISON_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, COMPARISON_KEYWORDS)
-    end
-    if CONDITION_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, CONDITION_KEYWORDS)
-    end
-    if END_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, END_KEYWORDS)
-    end
-    if FALSE_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, FALSE_KEYWORDS)
-    end
-    if TRUE_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, TRUE_KEYWORDS)
-    end
-    if LOOP_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, LOOP_KEYWORDS)
-    end
-    if GREATER_THAN_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, GREATER_THAN_KEYWORDS)
-    end
-    if LESS_THAN_KEYWORDS.any? { |word| line.include?(word) }
-      line = parse(line, LESS_THAN_KEYWORDS)
+    ALICIA_KEYS.each do |keywords|
+      if keywords.any? { |word| line.include?(word) }
+        line = parse(line, keywords)
+      end
     end
     line
   end
