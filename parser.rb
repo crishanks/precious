@@ -14,17 +14,20 @@ class Parser
   MULTIPLICATION_KEYWORDS = ['gives aid to']
   COMPARISON_KEYWORDS = ['as strong as']
   CONDITION_KEYWORDS = ['does', 'if', 'will']
-  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if']
+  END_KEYWORDS = ['you shall not pass']
+  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end']
 
-  ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
+  ALicia_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
-  SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS, COMPARISON_KEYWORDS, CONDITION_KEYWORDS]
+  SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS,
+  COMPARISON_KEYWORDS, CONDITION_KEYWORDS, END_KEYWORDS]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
     {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
     {'-=1': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
     {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
-   {'/': DIVISION_KEYWORDS}, {'==': COMPARISON_KEYWORDS}, {'if': CONDITION_KEYWORDS}]
+   {'/': DIVISION_KEYWORDS}, {'==': COMPARISON_KEYWORDS},
+   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}]
 
   def self.parse_file(file)
     str = ""
@@ -72,7 +75,7 @@ class Parser
       line = check_for_keywords(line)
 
       #remove extra english words
-      line = only_valuable_words(line)
+      line = only_valuable_words(line).downcase
 
       #put string back into line
       if line.include? ('"quote_placeholder"')
@@ -118,6 +121,9 @@ class Parser
     end
     if CONDITION_KEYWORDS.any? { |word| line.include?(word) }
       line = parse(line, CONDITION_KEYWORDS)
+    end
+    if END_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, END_KEYWORDS)
     end
     line
   end

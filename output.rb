@@ -1,25 +1,26 @@
 puts "they are taking the hobbits to Isengard"
-Frodo = 8
-Saruman = 7
-Frodo +=1
-Despair = Frodo - Sam
-Ruin = Frodo
+frodo = 8
+saruman = 7
+frodo +=1
+despair = frodo - saruman
+ruin = frodo
 
 
-puts Despair + Ruin
-Frodo + Saruman
-Sam = 3
+puts despair + ruin
+frodo + saruman
+sam = 3
 # Sam is going to be a number
 
-Frodo - Sam
-Sam -=1
-Sam / Saruman
-Saruman * Saruman
-Gollum + Frodo Mordor
+frodo - sam
+sam -=1
+sam / saruman
+saruman * saruman
+gollum = "a good boy"
+gollum + frodo
 
 
-if Gollum == Frodo
-
-
+if gollum == frodo
+sam = sam + frodo
+end
 
 
