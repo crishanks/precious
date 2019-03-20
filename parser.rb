@@ -12,7 +12,7 @@ class Parser
   SUBTRACTION_KEYWORDS = ['leaves the fellowship']
   DIVISION_KEYWORDS = ['decapitates']
   MULTIPLICATION_KEYWORDS = ['gives aid to']
-  OPERATOR_KEYWORDS = ['+', '-', '=', '*', '/', '+=', '-=', 'puts']
+  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=', '-=', 'puts']
 
   ALL_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
@@ -31,8 +31,17 @@ class Parser
     #check if there are strings in line
     quote = ""
     if line.include? '"'
-      quote = check_for_string(line)
+      quote = get_string(line)
       line = line.gsub(quote, 'quote_placeholder')
+    end
+
+    #check if line is a comment
+    comment = ""
+    if COMMENT_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse_comment(line)
+      comment = get_comment(line)
+      line = line.gsub(comment, 'comment_placeholder')
+      puts line
     end
 
     #get rid of special chars
@@ -52,6 +61,10 @@ class Parser
     if line.include? ('"quote_placeholder"')
       line = line.gsub('quote_placeholder', quote)
     end
+
+    if line.include? ('comment_placeholder')
+      line = line.gsub('comment_placeholder', comment)
+    end
     puts "end line: #{line}"
 
   end
@@ -62,11 +75,11 @@ class Parser
     if line.length == 1
       write("\n")
     else
+      # if COMMENT_KEYWORDS.any? { |word| line.include? word}
+      #   line = parse_comment(line)
+      # end
       if PUT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_put(line)
-      end
-      if COMMENT_KEYWORDS.any? { |word| line.include?(word) }
-        line = parse_comment(line)
       end
       if ASSIGNMENT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse_assignment(line)
@@ -105,13 +118,13 @@ class Parser
   end
 
   def self.parse_comment(line)
-    COMMENT_KEYWORD.each do |keyword|
+    COMMENT_KEYWORDS.each do |keyword|
       if line.include? keyword
         line = line.gsub(keyword, '#')
       end
     end
-    return comment_string
-    write(comment_string)
+    return line
+    write(line)
   end
 
   def self.parse_assignment(line)
@@ -223,6 +236,8 @@ class Parser
       valuable = true
     elsif word == '"quote_placeholder"' #if string
       valuable = true
+    elsif word == '#comment_placeholder' #if string
+      valuable = true
     elsif word.to_i.to_s == word #if num
       valuable = true
     elsif OPERATOR_KEYWORDS.include? word #if operator
@@ -231,7 +246,7 @@ class Parser
     valuable
   end
 
-  def self.check_for_string(phrase)
+  def self.get_string(phrase)
     phrase_array = phrase.split('')
     index = phrase_array.find_index { |i| i == '"'} + 1
     quote = ""
@@ -240,6 +255,17 @@ class Parser
       index += 1
     end
     quote
+  end
+
+  def self.get_comment(phrase)
+    phrase_array = phrase.split('')
+    index = phrase_array.find_index { |i| i == '#'} + 1
+    comment = ""
+    while index < phrase_array.length
+      comment << phrase_array[index]
+      index += 1
+    end
+    comment
   end
 
 
