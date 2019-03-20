@@ -1,6 +1,6 @@
 require_relative 'parser.rb'
 
-reader_file = "middle_earth.precious"
+reader_file = "shire.precious"
 writer_file = "output.rb"
 
 def check_extension(reader_file, writer_file)

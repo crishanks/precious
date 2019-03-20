@@ -17,19 +17,23 @@ class Parser
   END_KEYWORDS = ['you shall not pass']
   TRUE_KEYWORDS = ['precious']
   FALSE_KEYWORDS = ['not precious']
-  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end', 'true', 'false']
+  LOOP_KEYWORDS = ['whilst']
+  GREATER_THAN_KEYWORDS = ['stronger than', 'more']
+  LESS_THAN_KEYWORDS = ['weaker than', 'less']
+  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end', 'true', 'false', 'while', '>', '<']
+
 
   ALICIA_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
   SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS,
-  COMPARISON_KEYWORDS, CONDITION_KEYWORDS, END_KEYWORDS, TRUE_KEYWORDS, FALSE_KEYWORDS]
+  COMPARISON_KEYWORDS, CONDITION_KEYWORDS, END_KEYWORDS, TRUE_KEYWORDS, FALSE_KEYWORDS, LOOP_KEYWORDS, GREATER_THAN_KEYWORDS, LESS_THAN_KEYWORDS]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
     {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
     {'-=1': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
     {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
    {'/': DIVISION_KEYWORDS}, {'==': COMPARISON_KEYWORDS},
-   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}, {'true': TRUE_KEYWORDS}, {'false': FALSE_KEYWORDS}]
+   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}, {'true': TRUE_KEYWORDS}, {'false': FALSE_KEYWORDS}, {'while': LOOP_KEYWORDS}, {'>': GREATER_THAN_KEYWORDS}, {'<': LESS_THAN_KEYWORDS}]
 
   def self.parse_file(file)
     str = ""
@@ -134,6 +138,15 @@ class Parser
     if TRUE_KEYWORDS.any? { |word| line.include?(word) }
       line = parse(line, TRUE_KEYWORDS)
     end
+    if LOOP_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, LOOP_KEYWORDS)
+    end
+    if GREATER_THAN_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, GREATER_THAN_KEYWORDS)
+    end
+    if LESS_THAN_KEYWORDS.any? { |word| line.include?(word) }
+      line = parse(line, LESS_THAN_KEYWORDS)
+    end
     line
   end
 
@@ -158,7 +171,7 @@ class Parser
   end
 
   def self.purify(word)
-    word = word.gsub(/[!@%&.]/,'') # get rid of special chars
+    word = word.gsub(/[!@%&.?,]/,'') # get rid of special chars
   end
 
   def self.only_valuable_words(line)

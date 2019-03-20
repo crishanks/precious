@@ -1,6 +1,6 @@
 # precious
 
-v2 Documentation:
+v3 Documentation:
 
 Running the program
 
@@ -61,3 +61,15 @@ division
 use the keywords: 'decapitates'
 
 Gimly decapitates Legolas
+
+booleans
+use the keywords: 'precious' and 'not precious'
+
+Legolas is precious!!!!
+but the Balrog is not precious
+
+loops
+use the keywords: 'whilst'
+
+whilst Frodo climed as strong as he could, Saruman cried, nooo!!
+
