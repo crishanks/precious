@@ -1,6 +1,6 @@
 puts "they are taking the hobbits to Isengard"
 frodo = 398
-saruman 7
+saruman = 7
 frodo +=1
 despair = frodo - saruman
 ruin = frodo
@@ -29,18 +29,18 @@ puts sam
 middleearth = true
 
 
-balrog = true
+balrog = ! true
+puts balrog
 
 
+frodo = 2
 while frodo < saruman
+puts "put more armor on"
+frodo +=1
 end
 
 
 nazgul = 10
-
-
-if frodo > nazgul
-end
 
 
 if nazgul < saruman

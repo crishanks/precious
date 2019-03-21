@@ -6,7 +6,7 @@ class Parser
   #LINE_KEYWORDS = [',', '.', '?', '!', ';']
   PUT_KEYWORDS = ['bring forth the ring', 'says', 'screams', 'exclaims', 'sobbs', 'coughs']
   COMMENT_KEYWORDS = ['second breakfast', 'wear the ring']
-  ASSIGNMENT_KEYWORDS = ['is', 'has', 'are']
+  ASSIGNMENT_KEYWORDS = ['is', 'are', 'was', 'has']
   INCREMENT_KEYWORDS = ['eats lembas bread', 'fortifies stronghold', 'rests', 'recieves Evenstar', 'reforges Narsil']
   DECREMENT_KEYWORDS = ['runs out of lembas bread', 'lost', 'hunted by orcs']
   ADDITION_KEYWORDS = ['joins', 'join', 'and', 'accompanies']
@@ -17,18 +17,18 @@ class Parser
   CONDITION_KEYWORDS = ['does', 'if', 'will']
   END_KEYWORDS = ['you shall not pass']
   TRUE_KEYWORDS = ['precious']
-  FALSE_KEYWORDS = ['not precious']
   LOOP_KEYWORDS = ['whilst', 'during the journey']
   GREATER_THAN_KEYWORDS = ['stronger than', 'more']
   LESS_THAN_KEYWORDS = ['weaker than', 'less']
-  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end', 'true', 'false', 'while', '>', '<']
+  NEGATION_KEYWORD = ['not']
+  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end', 'true', 'while', '>', '<', '!']
 
 
   ALICIA_KEYS = [END_KEYWORDS, PUT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
   SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS,
   COMPARISON_KEYWORDS, CONDITION_KEYWORDS, TRUE_KEYWORDS,
-  FALSE_KEYWORDS, LOOP_KEYWORDS, GREATER_THAN_KEYWORDS, LESS_THAN_KEYWORDS]
+ LOOP_KEYWORDS, GREATER_THAN_KEYWORDS, LESS_THAN_KEYWORDS, NEGATION_KEYWORD]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
     {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
@@ -36,8 +36,8 @@ class Parser
     {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
    {'/': DIVISION_KEYWORDS}, {'==': COMPARISON_KEYWORDS},
    {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}, {'true': TRUE_KEYWORDS},
-    {'false': FALSE_KEYWORDS}, {'while': LOOP_KEYWORDS},
-    {'>': GREATER_THAN_KEYWORDS}, {'<': LESS_THAN_KEYWORDS}]
+   {'while': LOOP_KEYWORDS}, {'>': GREATER_THAN_KEYWORDS},
+   {'<': LESS_THAN_KEYWORDS}, {'!': NEGATION_KEYWORD}]
 
   def self.parse_file(file)
     str = ""
@@ -62,7 +62,7 @@ class Parser
       #check if there are strings in line
       quote = ""
       if line.include? '"'
-        quote = get_string(line)
+        quote = get_quote(line)
         line = line.gsub(quote, 'quote_placeholder')
       end
 
@@ -163,7 +163,7 @@ class Parser
     valuable
   end
 
-  def self.get_string(phrase)
+  def self.get_quote(phrase)
     phrase_array = phrase.split('')
     index = phrase_array.find_index { |i| i == '"'} + 1
     quote = ""
@@ -194,6 +194,5 @@ class Parser
       end
     end
   end
-
 
 end
