@@ -6,7 +6,7 @@ class Parser
   #LINE_KEYWORDS = [',', '.', '?', '!', ';']
   PUT_KEYWORDS = ['bring forth the ring', 'says', 'screams', 'exclaims', 'sobbs', 'coughs']
   COMMENT_KEYWORDS = ['second breakfast', 'wear the ring']
-  ASSIGNMENT_KEYWORDS = ['is', 'has', 'was']
+  ASSIGNMENT_KEYWORDS = ['is', 'has', 'are']
   INCREMENT_KEYWORDS = ['eats lembas bread', 'fortifies stronghold', 'rests', 'recieves Evenstar', 'reforges Narsil']
   DECREMENT_KEYWORDS = ['runs out of lembas bread', 'lost', 'hunted by orcs']
   ADDITION_KEYWORDS = ['joins', 'join', 'and', 'accompanies']

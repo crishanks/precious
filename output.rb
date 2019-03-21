@@ -1,6 +1,6 @@
 puts "they are taking the hobbits to Isengard"
 frodo = 398
-saruman = 7
+saruman 7
 frodo +=1
 despair = frodo - saruman
 ruin = frodo

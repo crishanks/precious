@@ -14,6 +14,21 @@ Run: ruby precious.rb
 
 Syntax:
 
+#variables
+use capitols
+
+Frodo is 8 years old
+
+#strings
+use double quotes
+
+Frodo is "a hobbit"
+
+#integers
+write normally
+
+Orcs are 2 big
+
 #commenting
 use the keywords: 'second breakfast', 'wear the ring'
 
@@ -27,10 +42,10 @@ bring forth the ring Frodo
 gandalf says "they're taking the hobbits to Isengard"
 
 #assignment
-use the keywords: 'is', 'has', 'was'
+use the keywords: 'is', 'has', 'are'
 
 Frodo is 8
-Saruman was worried when he saw 7 hobbits approaching his lair
+Elves are worried when they saw 7 hobbits approaching the lair
 
 #increment
 use the keywords: 'eats lembas bread', 'fortifies stronghold', 'rests', 'recieves Evenstar' or 'reforges Narsil'
