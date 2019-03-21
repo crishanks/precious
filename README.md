@@ -82,7 +82,7 @@ use keywords: 'as' or 'equal'
 Gollum equal Smeagol
 
 #greater/less than
-use keywords: 'stronger than'or 'more' and 'weaker than' or 'less'
+use keywords: 'stronger than' or 'more' and 'weaker than' or 'less'
 
 Bilbo ate more tree food than Treebeard
 

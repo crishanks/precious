@@ -3,6 +3,7 @@ require 'pry'
 class Parser
   WRITER_FILE = 'output.rb'
   # KEYWORDS
+  #LINE_KEYWORDS = [',', '.', '?', '!', ';']
   PUT_KEYWORDS = ['bring forth the ring', 'says', 'screams', 'exclaims', 'sobbs', 'coughs']
   COMMENT_KEYWORDS = ['second breakfast', 'wear the ring']
   ASSIGNMENT_KEYWORDS = ['is', 'has', 'was']
@@ -12,7 +13,7 @@ class Parser
   SUBTRACTION_KEYWORDS = ['leaves the fellowship', 'stabs', 'banishes', 'steals']
   MULTIPLICATION_KEYWORDS = ['gives aid to', 'procreates', 'bolsters']
   DIVISION_KEYWORDS = ['decapitates', 'dismembers']
-  COMPARISON_KEYWORDS = ['as', 'equal']
+  COMPARISON_KEYWORDS = ['as', 'equal', 'same']
   CONDITION_KEYWORDS = ['does', 'if', 'will']
   END_KEYWORDS = ['you shall not pass']
   TRUE_KEYWORDS = ['precious']
@@ -23,17 +24,20 @@ class Parser
   OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end', 'true', 'false', 'while', '>', '<']
 
 
-  ALICIA_KEYS = [PUT_KEYWORDS, COMMENT_KEYWORDS, ASSIGNMENT_KEYWORDS,
+  ALICIA_KEYS = [END_KEYWORDS, PUT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
   SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS,
-  COMPARISON_KEYWORDS, CONDITION_KEYWORDS, END_KEYWORDS, TRUE_KEYWORDS, FALSE_KEYWORDS, LOOP_KEYWORDS, GREATER_THAN_KEYWORDS, LESS_THAN_KEYWORDS]
+  COMPARISON_KEYWORDS, CONDITION_KEYWORDS, TRUE_KEYWORDS,
+  FALSE_KEYWORDS, LOOP_KEYWORDS, GREATER_THAN_KEYWORDS, LESS_THAN_KEYWORDS]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
     {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
     {'-=1': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
     {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
    {'/': DIVISION_KEYWORDS}, {'==': COMPARISON_KEYWORDS},
-   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}, {'true': TRUE_KEYWORDS}, {'false': FALSE_KEYWORDS}, {'while': LOOP_KEYWORDS}, {'>': GREATER_THAN_KEYWORDS}, {'<': LESS_THAN_KEYWORDS}]
+   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}, {'true': TRUE_KEYWORDS},
+    {'false': FALSE_KEYWORDS}, {'while': LOOP_KEYWORDS},
+    {'>': GREATER_THAN_KEYWORDS}, {'<': LESS_THAN_KEYWORDS}]
 
   def self.parse_file(file)
     str = ""
@@ -147,9 +151,9 @@ class Parser
     valuable = false
     if /[[:upper:]]/.match(word[0]) #if variable
       valuable = true
-    elsif word == '"quote_placeholder"' #if string
+    elsif word == '"quote_placeholder"' #if string/quote
       valuable = true
-    elsif word == '#comment_placeholder' #if string
+    elsif word == '#comment_placeholder' #if comment
       valuable = true
     elsif word.to_i.to_s == word #if num
       valuable = true
