@@ -33,6 +33,10 @@ balrog = ! true
 puts balrog
 
 
+class  TheMines
+
+
+
 frodo = 2
 while frodo < saruman
 puts "put more armor on"
@@ -50,4 +54,7 @@ end
 
 
 mordo( nazgul, frodo )
+
+
+end
 

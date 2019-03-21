@@ -13,7 +13,7 @@ class Parser
   SUBTRACTION_KEYWORDS = ['leaves the fellowship', 'stabs', 'banishes', 'steals']
   MULTIPLICATION_KEYWORDS = ['gives aid to', 'procreates', 'bolsters']
   DIVISION_KEYWORDS = ['decapitates', 'dismembers']
-  COMPARISON_KEYWORDS = ['as', 'equal', 'same']
+  COMPARISON_KEYWORDS = ['equal', 'same', 'similar']
   CONDITION_KEYWORDS = ['does', 'if', 'will']
   END_KEYWORDS = ['you shall not pass']
   TRUE_KEYWORDS = ['precious']
@@ -24,8 +24,9 @@ class Parser
   FUNCTION_CALL_KEYWORDS = ["theyre taking the hobbits to"]
   PARAM_KEYWORDS = ['with']
   NEGATION_KEYWORDS = ['not']
+  CLASS_KEYWORDS = ['chapter']
   OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts',
-    '==', 'if', 'end', 'true', 'while', '>', '<', '!', 'def', '(', ')']
+    '==', 'if', 'end', 'true', 'while', '>', '<', '!', 'def', '(', ')', 'class']
 
 
   ALICIA_KEYS = [END_KEYWORDS, PUT_KEYWORDS, ASSIGNMENT_KEYWORDS,
@@ -33,7 +34,7 @@ class Parser
   SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS,
   COMPARISON_KEYWORDS, CONDITION_KEYWORDS, TRUE_KEYWORDS,
  LOOP_KEYWORDS, GREATER_THAN_KEYWORDS, LESS_THAN_KEYWORDS,
- NEGATION_KEYWORDS, FUNCTION_DEF_KEYWORDS, FUNCTION_CALL_KEYWORDS]
+ NEGATION_KEYWORDS, FUNCTION_DEF_KEYWORDS, FUNCTION_CALL_KEYWORDS, CLASS_KEYWORDS]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
     {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
@@ -44,7 +45,7 @@ class Parser
    {'true': TRUE_KEYWORDS}, {'while': LOOP_KEYWORDS},
    {'>': GREATER_THAN_KEYWORDS}, {'<': LESS_THAN_KEYWORDS},
    {'!': NEGATION_KEYWORDS}, {'def': FUNCTION_DEF_KEYWORDS},
-   {'': FUNCTION_CALL_KEYWORDS},{'(': PARAM_KEYWORDS}]
+   {'': FUNCTION_CALL_KEYWORDS},{'(': PARAM_KEYWORDS}, {'class': CLASS_KEYWORDS}]
 
   def self.parse_file(file)
     str = ""
@@ -91,6 +92,15 @@ class Parser
         line = line.gsub(params, 'param_placeholder ')  + ')'
       end
 
+      class_word = ""
+      if CLASS_KEYWORDS.any? { |word| line.include?(word) }
+        line = parse(line, CLASS_KEYWORDS)
+        class_word = store_important(line, ':')
+        line = line.gsub(class_word, ' class_word_placeholder')
+      end
+
+
+
       #get rid of special chars
       line_array = line.split(" ")
       line_array.each_with_index do |word, index|
@@ -118,7 +128,11 @@ class Parser
         line = line.gsub('param_placeholder', params.downcase)
         line = format_function(line)
       end
-      #puts "end line: #{line}"
+
+      if line.include? ('class_word_placeholder')
+        line = line.gsub('class_word_placeholder', "#{class_word}")
+      end
+
       # write("#{line}")
       return line
     end
@@ -126,9 +140,7 @@ class Parser
 
   def self.check_for_keywords(line)
     ALICIA_KEYS.each do |keywords|
-      if keywords.any? { |word| line.include?(word) }
-        line = parse(line, keywords)
-      end
+      line = parse(line, keywords)
     end
     line
   end
@@ -137,6 +149,7 @@ class Parser
   def self.parse(line, keywords)
     keywords.each do |keyword|
       if line.include? keyword
+        puts keyword
         replacement = find_replacement(keywords)
         line = line.gsub(keyword, replacement)
       end
@@ -182,6 +195,8 @@ class Parser
     elsif word == '#comment_placeholder' #if comment
       valuable = true
     elsif word == '(param_placeholder' #if params
+      valuable = true
+    elsif word == 'class_word_placeholder' #if class
       valuable = true
     elsif word.to_i.to_s == word #if num
       valuable = true
