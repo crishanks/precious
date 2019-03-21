@@ -14,62 +14,87 @@ Run: ruby precious.rb
 
 Syntax:
 
-commenting
-use the keywords: 'second breakfast'
+#commenting
+use the keywords: 'second breakfast', 'wear the ring'
 
 i love second breakfast Sam is going to be a number
+wear the ring Frodo
 
-printing
-use the keywords: 'bring forth the ring' or 'says'
+#puts
+use the keywords: 'bring forth the ring', 'says', 'screams', 'exclaims', 'sobbs' or 'coughs'
 
 bring forth the ring Frodo
 gandalf says "they're taking the hobbits to Isengard"
 
-assignment
+#assignment
 use the keywords: 'is', 'has', 'was'
 
 Frodo is 8
 Saruman was worried when he saw 7 hobbits approaching his lair
 
-increment
-use the keywords: 'eats lembas bread'
+#increment
+use the keywords: 'eats lembas bread', 'fortifies stronghold', 'rests', 'recieves Evenstar' or 'reforges Narsil'
 
 Frodo eats lembas bread
 
-decrement
-use the keywords: 'runs out of lembas bread'
+#decrement
+use the keywords: 'runs out of lembas bread', 'lost' or 'hunted by orcs'
 
 Sam runs out of lembas bread
+Pippin gets hunted by orcs
 
-addition
-use the keywords: 'join the fellowship', 'and'
+#addition
+use the keywords: 'joins', 'and' or 'accompanies'
 
-Frodo and Saruman join the fellowship
+Frodo joins the fellowship with a Nazgul
 Gollum and Frodo went inside mordor
 
-subtraction
-use the keywords: 'leave the fellowship'
+#subtraction
+use the keywords: 'leaves the fellowship', 'stabs', 'banishes' or 'steals'
 
 Sam leaves the fellowship without telling Sam
+a Wraith accidentally stabs Sauron in the face at a really important business meeting
 
-multiplication
-use the keywords: 'gives aid to'
+#multiplication
+use the keywords: 'gives aid to', 'procreates' or 'bolsters'
 
-Saruman gives aid to Saruman
+Arigorn bolsters Helmsdeep
 
-division
-use the keywords: 'decapitates'
+#division
+use the keywords: 'decapitates' or 'dismembers'
 
-Gimly decapitates Legolas
+Gimly dismembers Legolas
 
-booleans
+#booleans
 use the keywords: 'precious' and 'not precious'
 
-Legolas is precious!!!!
+Legolas is precious!
 but the Balrog is not precious
 
-loops
-use the keywords: 'whilst'
+#loops
+use the keywords: 'whilst' or 'during the journey'
 
 whilst Frodo climed as strong as he could, Saruman cried, nooo!!
+
+#comparisons
+use keywords: 'as' or 'equal'
+
+Gollum equal Smeagol
+
+#greater/less than
+use keywords: 'stronger than'or 'more' and 'weaker than' or 'less'
+
+Bilbo ate more tree food than Treebeard
+
+#conditionals
+use keywords: 'does', 'if' or 'will'
+
+will Mary equal Pippin?
+
+#end
+use keywords: 'you shall not pass'
+
+you shall not pass
+
+
 
