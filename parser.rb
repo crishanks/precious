@@ -20,24 +20,31 @@ class Parser
   LOOP_KEYWORDS = ['whilst', 'during the journey']
   GREATER_THAN_KEYWORDS = ['stronger than', 'more']
   LESS_THAN_KEYWORDS = ['weaker than', 'less']
-  NEGATION_KEYWORD = ['not']
-  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts', '==', 'if', 'end', 'true', 'while', '>', '<', '!']
+  FUNCTION_DEF_KEYWORDS = ['transcribe', 'tell a story']
+  FUNCTION_CALL_KEYWORDS = ["theyre taking the hobbits to"]
+  PARAM_KEYWORDS = ['with']
+  NEGATION_KEYWORDS = ['not']
+  OPERATOR_KEYWORDS = ['#', '+', '-', '=', '*', '/', '+=1', '-=1', 'puts',
+    '==', 'if', 'end', 'true', 'while', '>', '<', '!', 'def', '(', ')']
 
 
   ALICIA_KEYS = [END_KEYWORDS, PUT_KEYWORDS, ASSIGNMENT_KEYWORDS,
      INCREMENT_KEYWORDS, DECREMENT_KEYWORDS, ADDITION_KEYWORDS,
   SUBTRACTION_KEYWORDS, DIVISION_KEYWORDS, MULTIPLICATION_KEYWORDS,
   COMPARISON_KEYWORDS, CONDITION_KEYWORDS, TRUE_KEYWORDS,
- LOOP_KEYWORDS, GREATER_THAN_KEYWORDS, LESS_THAN_KEYWORDS, NEGATION_KEYWORD]
+ LOOP_KEYWORDS, GREATER_THAN_KEYWORDS, LESS_THAN_KEYWORDS,
+ NEGATION_KEYWORDS, FUNCTION_DEF_KEYWORDS, FUNCTION_CALL_KEYWORDS]
 
   MAP = [{'puts': PUT_KEYWORDS}, {'#': COMMENT_KEYWORDS},
     {'=': ASSIGNMENT_KEYWORDS}, {'+=1': INCREMENT_KEYWORDS},
     {'-=1': DECREMENT_KEYWORDS}, {'+': ADDITION_KEYWORDS},
     {'-': SUBTRACTION_KEYWORDS}, {'*': MULTIPLICATION_KEYWORDS},
    {'/': DIVISION_KEYWORDS}, {'==': COMPARISON_KEYWORDS},
-   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS}, {'true': TRUE_KEYWORDS},
-   {'while': LOOP_KEYWORDS}, {'>': GREATER_THAN_KEYWORDS},
-   {'<': LESS_THAN_KEYWORDS}, {'!': NEGATION_KEYWORD}]
+   {'if': CONDITION_KEYWORDS}, {'end': END_KEYWORDS},
+   {'true': TRUE_KEYWORDS}, {'while': LOOP_KEYWORDS},
+   {'>': GREATER_THAN_KEYWORDS}, {'<': LESS_THAN_KEYWORDS},
+   {'!': NEGATION_KEYWORDS}, {'def': FUNCTION_DEF_KEYWORDS},
+   {'': FUNCTION_CALL_KEYWORDS},{'(': PARAM_KEYWORDS}]
 
   def self.parse_file(file)
     str = ""
@@ -70,8 +77,18 @@ class Parser
       comment = ""
       if COMMENT_KEYWORDS.any? { |word| line.include?(word) }
         line = parse(line, COMMENT_KEYWORDS)
-        comment = get_comment(line)
+        comment = store_important(line, '#')
         line = line.gsub(comment, 'comment_placeholder')
+      end
+
+      #check if line has params
+      params = ""
+      if ((PARAM_KEYWORDS.any? { |word| line.include?(word) }) &&
+        ((FUNCTION_DEF_KEYWORDS.any? { |word| line.include?(word) }) ||
+        (FUNCTION_CALL_KEYWORDS.any? { |word| line.include?(word) })))
+        line = parse(line, PARAM_KEYWORDS)
+        params = remove_newline(store_important(line, ' ('))
+        line = line.gsub(params, 'param_placeholder ')  + ')'
       end
 
       #get rid of special chars
@@ -95,6 +112,10 @@ class Parser
 
       if line.include? ('comment_placeholder')
         line = line.gsub('comment_placeholder', comment)
+      end
+
+      if line.include? ('param_placeholder')
+        line = line.gsub('param_placeholder', params.downcase)
       end
       #puts "end line: #{line}"
       # write("#{line}")
@@ -132,7 +153,11 @@ class Parser
   end
 
   def self.purify(word)
-    word = word.gsub(/[!@%&.?,]/,'') # get rid of special chars
+    word = word.gsub(/[!@%&.?,]/,'')# get rid of special chars
+  end
+
+  def self.remove_newline(line)
+    line.gsub(/\n/, "")
   end
 
   def self.only_valuable_words(line)
@@ -155,6 +180,8 @@ class Parser
       valuable = true
     elsif word == '#comment_placeholder' #if comment
       valuable = true
+    elsif word == 'param_placeholder' #if params
+      valuable = true
     elsif word.to_i.to_s == word #if num
       valuable = true
     elsif OPERATOR_KEYWORDS.include? word #if operator
@@ -174,15 +201,15 @@ class Parser
     quote
   end
 
-  def self.get_comment(phrase)
+  def self.store_important(phrase, key)
     phrase_array = phrase.split('')
-    index = phrase_array.find_index { |i| i == '#'} + 1
-    comment = ""
+    index = phrase_array.find_index { |i| i == key} + 1
+    string = ""
     while index < phrase_array.length
-      comment << phrase_array[index]
+      string << phrase_array[index]
       index += 1
     end
-    comment
+    string
   end
 
   def self.find_replacement(keywords)
@@ -193,6 +220,7 @@ class Parser
         end
       end
     end
+    return nil
   end
 
 end
