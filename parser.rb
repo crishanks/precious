@@ -87,7 +87,7 @@ class Parser
         ((FUNCTION_DEF_KEYWORDS.any? { |word| line.include?(word) }) ||
         (FUNCTION_CALL_KEYWORDS.any? { |word| line.include?(word) })))
         line = parse(line, PARAM_KEYWORDS)
-        params = remove_newline(store_important(line, ' ('))
+        params = remove_newline(store_important(line, '('))
         line = line.gsub(params, 'param_placeholder ')  + ')'
       end
 
@@ -116,6 +116,7 @@ class Parser
 
       if line.include? ('param_placeholder')
         line = line.gsub('param_placeholder', params.downcase)
+        line = format_function(line)
       end
       #puts "end line: #{line}"
       # write("#{line}")
@@ -180,7 +181,7 @@ class Parser
       valuable = true
     elsif word == '#comment_placeholder' #if comment
       valuable = true
-    elsif word == 'param_placeholder' #if params
+    elsif word == '(param_placeholder' #if params
       valuable = true
     elsif word.to_i.to_s == word #if num
       valuable = true
@@ -221,6 +222,14 @@ class Parser
       end
     end
     return nil
+  end
+
+  def self.format_function(line)
+    phrase_array = line.split('')
+    index = phrase_array.find_index { |i| i == "("}
+    phrase_array.delete_at(index - 1)
+    phrase_array.delete_at(index - 2)
+    phrase_array.join("")
   end
 
 end
