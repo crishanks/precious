@@ -96,5 +96,4 @@ use keywords: 'you shall not pass'
 
 you shall not pass
 
-
-
+WE INTENDED ON IMPLEMENTING FUNCTIONS
